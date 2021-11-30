@@ -6,6 +6,7 @@ import {
   OvertimeApplication,
   OvertimeApplicationSchema,
 } from './schemas/overtime-application.schema';
+import { SchedulingApplication, SchedulingApplicationSchema } from './schemas/scheduling-application.schema';
 import { User, UserSchema } from './schemas/user.schema';
 
 @Module({
@@ -15,8 +16,11 @@ import { User, UserSchema } from './schemas/user.schema';
     MongooseModule.forFeature([
       { name: OvertimeApplication.name, schema: OvertimeApplicationSchema },
     ]),
+    MongooseModule.forFeature([
+      { name: SchedulingApplication.name, schema: SchedulingApplicationSchema },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

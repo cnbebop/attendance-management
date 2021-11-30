@@ -6,6 +6,7 @@ import {
   OvertimeApplication,
   OvertimeApplicationDocument,
 } from './schemas/overtime-application.schema';
+import { SchedulingApplication, SchedulingApplicationDocument } from './schemas/scheduling-application.schema';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -14,7 +15,9 @@ export class AppService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(OvertimeApplication.name)
     private applicationModel: Model<OvertimeApplicationDocument>,
-  ) {}
+    @InjectModel(SchedulingApplication.name)
+    private schedulingApplicationModel: Model<SchedulingApplicationDocument>
+  ) { }
 
   async getUserList() {
     return this.userModel.find().exec();
@@ -26,5 +29,13 @@ export class AppService {
 
   async getApplications() {
     return this.applicationModel.find().exec();
+  }
+
+  async createSchedulingApplication(dto: SchedulingApplication) {
+    return this.schedulingApplicationModel.create(dto);
+  }
+
+  async getSchedulingApplications() {
+    return this.schedulingApplicationModel.find().exec();
   }
 }

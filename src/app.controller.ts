@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApplicationDto } from './dtos/application.dto';
+import { SchedulingApplication } from './schemas/scheduling-application.schema';
 
 @Controller()
 export class AppController {
@@ -20,4 +21,16 @@ export class AppController {
   async getApplicationList() {
     return this.appService.getApplications();
   }
+
+  @Post('/create-scheduling-application')
+  async createSchedulingApplication(@Body() dto: SchedulingApplication) {
+    return this.appService.createSchedulingApplication(dto);
+  }
+
+
+  @Get('/query-scheduling-applications')
+  async getSchedulingApplicationList() {
+    return this.appService.getSchedulingApplications();
+  }
+
 }
