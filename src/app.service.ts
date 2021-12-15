@@ -6,7 +6,7 @@ import {
   OvertimeApplication,
   OvertimeApplicationDocument,
 } from './schemas/overtime-application.schema';
-import { SchedulingApplication, SchedulingApplicationDocument } from './schemas/scheduling-application.schema';
+import { Scheduling, SchedulingDocument } from './schemas/scheduling.schema';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -15,8 +15,8 @@ export class AppService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     @InjectModel(OvertimeApplication.name)
     private applicationModel: Model<OvertimeApplicationDocument>,
-    @InjectModel(SchedulingApplication.name)
-    private schedulingApplicationModel: Model<SchedulingApplicationDocument>
+    @InjectModel(Scheduling.name)
+    private schedulingApplicationModel: Model<SchedulingDocument>
   ) { }
 
   async getUserList() {
@@ -31,11 +31,31 @@ export class AppService {
     return this.applicationModel.find().exec();
   }
 
-  async createSchedulingApplication(dto: SchedulingApplication) {
-    return this.schedulingApplicationModel.create(dto);
+  async createSchedulingApplication(dtos: Scheduling[]) {
+    return Promise.all(dtos.map((dto) => this.schedulingApplicationModel.findOneAndUpdate(
+      { userId: dto.userId, date: dto.date },
+      dto,
+      { new: true, upsert: true, overwrite: true }
+    )));
   }
 
-  async getSchedulingApplications() {
-    return this.schedulingApplicationModel.find().exec();
+  async getSchedulingApplications(startTime: string, endTime: string) {
+    return this.userModel.aggregate([
+      {
+        $lookup: {
+          from: "schedulings",
+          localField: "id",
+          foreignField: "userId",
+          let: {},
+          pipeline: [
+            { $match: { date: { $gte: startTime, $lte: endTime } } },
+            { $project: { _id: 0, k: { $dateToString: { date: { $dateFromString: { dateString: "$date" } }, format: "%Y-%m-%d" } }, v: { work: "$work", type: "$type" } } },
+            { $sort: { date: 1 } }
+          ],
+          as: "schedulings"
+        }
+      },
+      { $project: { _id: 0, userId: "$id", userName: "$name", schedulings: { $arrayToObject: "$schedulings" } } }
+    ]);
   }
 }

@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApplicationDto } from './dtos/application.dto';
-import { SchedulingApplication } from './schemas/scheduling-application.schema';
+import { Scheduling } from './schemas/scheduling.schema';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Get('/query-users')
   getHello() {
@@ -23,14 +23,14 @@ export class AppController {
   }
 
   @Post('/create-scheduling-application')
-  async createSchedulingApplication(@Body() dto: SchedulingApplication) {
-    return this.appService.createSchedulingApplication(dto);
+  async createSchedulingApplication(@Body() dtoList: Scheduling[]) {
+    return this.appService.createSchedulingApplication(dtoList);
   }
 
 
   @Get('/query-scheduling-applications')
-  async getSchedulingApplicationList() {
-    return this.appService.getSchedulingApplications();
+  async getSchedulingApplicationList(@Query() { startTime, endTime }: { startTime: string, endTime: string }) {
+    return this.appService.getSchedulingApplications(startTime, endTime);
   }
 
 }
