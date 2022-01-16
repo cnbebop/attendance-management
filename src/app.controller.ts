@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApplicationDto } from './dtos/application.dto';
 import { Scheduling } from './schemas/scheduling.schema';
@@ -21,6 +21,12 @@ export class AppController {
   async getApplicationList() {
     return this.appService.getApplications();
   }
+
+  @Delete('/application/:id')
+  async deleteApplication(@Param('id') id: string) {
+    return this.appService.delteApplication(id);
+  }
+
 
   @Post('/create-scheduling-application')
   async createSchedulingApplication(@Body() dtoList: Scheduling[]) {

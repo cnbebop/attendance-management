@@ -31,6 +31,10 @@ export class AppService {
     return this.applicationModel.find().exec();
   }
 
+  async delteApplication(id: string) {
+    return this.applicationModel.deleteOne({ _id: id });
+  }
+
   async createSchedulingApplication(dtos: Scheduling[]) {
     return Promise.all(dtos.map((dto) => this.schedulingApplicationModel.findOneAndUpdate(
       { userId: dto.userId, date: dto.date },
