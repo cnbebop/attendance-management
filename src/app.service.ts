@@ -28,7 +28,7 @@ export class AppService {
   }
 
   async getApplications() {
-    return this.applicationModel.find().exec();
+    return this.applicationModel.find().sort({ date: -1 }).exec();
   }
 
   async delteApplication(id: string) {
